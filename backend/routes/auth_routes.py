@@ -19,7 +19,7 @@ oauth.register(
 @router.get("/login")
 async def login(request: Request):
     redirect_uri = request.url_for("auth")
-    return await oauth.microsoft.authorize_redirect(request, redirect_uri)
+    return await oauth.microsoft.authorize_redirect(request, str(redirect_uri))
 
 @router.get("/callback")
 async def auth(request: Request):
