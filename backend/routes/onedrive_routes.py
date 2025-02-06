@@ -2,13 +2,20 @@ from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import RedirectResponse, JSONResponse
 import httpx
 import sqlite3
+from logging import info
+from session_mgmt import get_session
 
 router = APIRouter()
 
 
 @router.get("/root")
 async def get_root_folder(request: Request):
-    access_token = request.session.get("access_token")
+    session_id = request.cookies.get("session_id")    
+    info(f"Session ID: {session_id}")
+    if not session_id:
+        return RedirectResponse(url="/login")
+    access_token = get_session(session_id)["access_token"]
+    info(f"Access token: {access_token}")
     if not access_token:
         return RedirectResponse(url="/login")
     url = "https://graph.microsoft.com/v1.0/me/drive/root/children"

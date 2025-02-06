@@ -6,6 +6,7 @@ from routes.query_routes import router as query_router
 import os
 from dotenv import load_dotenv
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 from database import init_db
 from logging import basicConfig, info, INFO 
 
@@ -16,6 +17,14 @@ load_dotenv()
 
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY"))
+# Allow CORS for all origins, methods, and headers
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Use ["https://example.com"] to restrict
+    allow_credentials=True,
+    allow_methods=["*"],  # Use ["GET", "POST"] to restrict
+    allow_headers=["*"],  # Use ["Authorization", "Content-Type"] to restrict
+)
 
 # Include routers
 app.include_router(auth_router, prefix="/auth")

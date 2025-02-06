@@ -20,6 +20,7 @@ def create_user_session(user_id: str, provider: str, access_token: str):
 
 def get_session(session_id: str):
     conn = sqlite3.connect("database.db")
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     cursor.execute("SELECT session_id, user_id, provider, access_token, expiration FROM sessions WHERE session_id = ?", (session_id,))
     return cursor.fetchone()
